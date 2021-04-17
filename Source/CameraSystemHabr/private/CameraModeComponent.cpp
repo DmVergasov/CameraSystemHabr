@@ -27,6 +27,8 @@ void UCameraModeComponent::BeginPlay()
 
 	OriginSpringArmRelativeLocation = Character->GetCameraBoom()->GetRelativeLocation();
 
+	PlayerCameraManager = CastChecked<APlayerController>(Character->GetController())->PlayerCameraManager;
+
 	TryUpdateCameraMode();
 }
 
@@ -122,22 +124,9 @@ void UCameraModeComponent::UpdateCameraLocation(float DeltaTime)
 
 void UCameraModeComponent::UpdateFOV(float DeltaTime)
 {
-	if (auto cameraManager = GetPlayerCameraManager())
-	{
-		const auto currentFov = cameraManager->GetFOVAngle();
-		const auto targetFov = CurrentCameraMode->Fov;
-		auto newFov = FMath::FInterpTo(currentFov, targetFov, DeltaTime, GetInterpSpeed());
-
-		cameraManager->SetFOV(newFov);
-	}
-}
-
-APlayerCameraManager* UCameraModeComponent::GetPlayerCameraManager() const
-{
-	if (Character.IsValid() && Character->GetController() != nullptr)
-	{
-		return Cast<APlayerController> (Character->GetController())->PlayerCameraManager;
-	}
-
-	return nullptr;
+	const auto currentFov = PlayerCameraManager->GetFOVAngle();
+	const auto targetFov = CurrentCameraMode->Fov;
+	auto newFov = FMath::FInterpTo(currentFov, targetFov, DeltaTime, GetInterpSpeed());
+	
+	PlayerCameraManager->SetFOV(newFov);
 }

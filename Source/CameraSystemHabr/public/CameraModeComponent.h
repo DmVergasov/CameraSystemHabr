@@ -58,8 +58,6 @@ protected:
 	void UpdateCameraLocation(float DeltaTime);
 	void UpdateFOV(float DeltaTime);
 
-	APlayerCameraManager* GetPlayerCameraManager() const;
-
 protected:
 	UPROPERTY(EditAnywhere)
 	TArray<FCameraModeData> CameraModes;
@@ -68,6 +66,8 @@ protected:
 	UCameraMode* CurrentCameraMode;
 
 	TWeakObjectPtr <ACameraSystemCharacter> Character;
+
+	TWeakObjectPtr<APlayerCameraManager> PlayerCameraManager;
 
 	FVector OriginSpringArmRelativeLocation;
 
