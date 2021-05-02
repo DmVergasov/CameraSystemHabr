@@ -43,20 +43,14 @@ ACameraSystemCharacter::ACameraSystemCharacter()
 
 void ACameraSystemCharacter::AddTag(const FGameplayTag& Tag)
 {
-	if (!TagContainer.HasTag(Tag))
-	{
-		TagContainer.AddTag(Tag);
-		OnTagContainerChanged.Broadcast(Tag, true);
-	}
+	TagContainer.AddTag(Tag);
+	OnTagContainerChanged.Broadcast(Tag, true);
 }
 
 void ACameraSystemCharacter::RemoveTag(const FGameplayTag& Tag)
 {
-	if (TagContainer.HasTag(Tag))
-	{
-		TagContainer.RemoveTag(Tag);
-		OnTagContainerChanged.Broadcast(Tag, false);
-	}
+	TagContainer.RemoveTag(Tag);
+	OnTagContainerChanged.Broadcast(Tag, false);
 }
 
 const FGameplayTagContainer& ACameraSystemCharacter::GetGameplayTags() const

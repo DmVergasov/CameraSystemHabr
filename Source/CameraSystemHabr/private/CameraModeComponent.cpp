@@ -51,15 +51,12 @@ void UCameraModeComponent::TryUpdateCameraMode()
 
 void UCameraModeComponent::SetCameraMode(UCameraMode* NewMode)
 {
-	if (CurrentCameraMode != NewMode)
-	{
-		PreviousInterpSpeed = CurrentCameraMode == nullptr ? NewMode->InterpolationSpeed : CurrentCameraMode->InterpolationSpeed;
+	PreviousInterpSpeed = CurrentCameraMode == nullptr ? NewMode->InterpolationSpeed : CurrentCameraMode->InterpolationSpeed;
 
-		CurrentCameraMode = NewMode;
-		
-		Character->GetCameraBoom()->bUsePawnControlRotation = CurrentCameraMode->bUsePawnControlRotation;
-		TimeSecondsAfterSetNewMode = GetWorld()->GetTimeSeconds();
-	}
+	CurrentCameraMode = NewMode;
+	
+	Character->GetCameraBoom()->bUsePawnControlRotation = CurrentCameraMode->bUsePawnControlRotation;
+	TimeSecondsAfterSetNewMode = GetWorld()->GetTimeSeconds();
 }
 
 UCameraMode* UCameraModeComponent::DetermineCameraMode(const FGameplayTagContainer& Tags) const
