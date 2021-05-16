@@ -23,7 +23,7 @@ void UCameraModeComponent::BeginPlay()
 
 	if (Character->IsLocallyControlled())
 	{
-		Character->OnTagContainerChanged.AddUObject(this, &UCameraModeComponent::OnAbilityTagChanged);
+		Character->OnTagContainerChanged.AddDynamic(this, &UCameraModeComponent::OnAbilityTagChanged);
 	}
 
 	OriginSpringArmRelativeLocation = Character->GetCameraBoom()->GetRelativeLocation();
@@ -52,6 +52,11 @@ void UCameraModeComponent::TryUpdateCameraMode()
 
 void UCameraModeComponent::SetCameraMode(UCameraMode* NewMode)
 {
+	if (CurrentCameraMode == NewMode)
+	{
+		return;
+	}
+
 	PreviousInterpSpeed = CurrentCameraMode == nullptr ? NewMode->InterpolationSpeed : CurrentCameraMode->InterpolationSpeed;
 
 	CurrentCameraMode = NewMode;
@@ -59,6 +64,8 @@ void UCameraModeComponent::SetCameraMode(UCameraMode* NewMode)
 	Character->GetCharacterMovement()->bUseControllerDesiredRotation = CurrentCameraMode->bUseControllerDesiredRotation;
 	Character->GetCharacterMovement()->bOrientRotationToMovement = !CurrentCameraMode->bUseControllerDesiredRotation;
 	TimeSecondsAfterSetNewMode = GetWorld()->GetTimeSeconds();
+
+	OnCameraModeChangedDelegate.Broadcast(NewMode);
 }
 
 UCameraMode* UCameraModeComponent::DetermineCameraMode(const FGameplayTagContainer& Tags) const

@@ -50,7 +50,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	float BaseLookUpRate;
 
-	DECLARE_EVENT_TwoParams(ACameraSystemCharacter, FOnTagContainerChanged, const FGameplayTag& /*ChangedTag*/, bool /*bExist*/);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnTagContainerChanged, const FGameplayTag&, ChangedTag, bool, bExist);
+
+	UPROPERTY(BlueprintAssignable)
 	FOnTagContainerChanged OnTagContainerChanged;
 
 protected:

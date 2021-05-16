@@ -48,6 +48,7 @@ protected:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION()
 	void OnAbilityTagChanged(const FGameplayTag& Tag, bool TagExists);
 
 	void TryUpdateCameraMode();
@@ -65,6 +66,12 @@ protected:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+
+public:
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraModeChangedDelegate, UCameraMode*, NewMode);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCameraModeChangedDelegate OnCameraModeChangedDelegate;
 
 protected:
 	UPROPERTY(EditAnywhere, meta = (TitleProperty = "DebugName"))
