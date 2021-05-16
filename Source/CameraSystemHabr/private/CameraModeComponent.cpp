@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UCameraModeComponent::UCameraModeComponent()
 {
@@ -55,7 +56,8 @@ void UCameraModeComponent::SetCameraMode(UCameraMode* NewMode)
 
 	CurrentCameraMode = NewMode;
 	
-	Character->GetCameraBoom()->bUsePawnControlRotation = CurrentCameraMode->bUsePawnControlRotation;
+	Character->GetCharacterMovement()->bUseControllerDesiredRotation = CurrentCameraMode->bUseControllerDesiredRotation;
+	Character->GetCharacterMovement()->bOrientRotationToMovement = !CurrentCameraMode->bUseControllerDesiredRotation;
 	TimeSecondsAfterSetNewMode = GetWorld()->GetTimeSeconds();
 }
 
@@ -127,3 +129,18 @@ void UCameraModeComponent::UpdateFOV(float DeltaTime)
 	
 	PlayerCameraManager->SetFOV(newFov);
 }
+
+#if WITH_EDITOR
+void UCameraModeComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	if (PropertyChangedEvent.MemberProperty != nullptr && PropertyChangedEvent.MemberProperty->GetFName() == GET_MEMBER_NAME_CHECKED(UCameraModeComponent, CameraModes))
+	{
+		for (auto& mode : CameraModes)
+		{
+			mode.DebugName = mode.GetCameraMode() != nullptr ? mode.GetCameraMode()->GetClass()->GetName() : TEXT("None");
+		}
+	}
+}
+#endif

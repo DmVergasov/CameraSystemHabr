@@ -21,8 +21,12 @@ public:
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UFUNCTION(BlueprintCallable)
 	void AddTag(const FGameplayTag& Tag);
+
+	UFUNCTION(BlueprintCallable)
 	void RemoveTag(const FGameplayTag& Tag);
+
 	const FGameplayTagContainer& GetGameplayTags() const;
 
 protected:
@@ -59,6 +63,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
 	USceneComponent* SpringArmPivot;
 
+	UPROPERTY(BlueprintReadOnly)
 	FGameplayTagContainer TagContainer;
 };
 

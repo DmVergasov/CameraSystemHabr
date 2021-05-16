@@ -30,6 +30,6 @@ public:
 	FVector SpringArmPivotLocationOffset;
 
 	UPROPERTY(EditDefaultsOnly)
-	bool bUsePawnControlRotation = true;
+	bool bUseControllerDesiredRotation = false;
 	
 };

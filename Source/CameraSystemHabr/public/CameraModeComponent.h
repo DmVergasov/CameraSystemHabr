@@ -23,6 +23,10 @@ public:
 
 	UCameraMode* GetCameraMode() const { return CameraMode; }
 
+public:
+	UPROPERTY(VisibleAnywhere)
+	FString DebugName;
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Instanced)
 	UCameraMode* CameraMode;
@@ -58,8 +62,12 @@ protected:
 	void UpdateCameraLocation(float DeltaTime);
 	void UpdateFOV(float DeltaTime);
 
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
 protected:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, meta = (TitleProperty = "DebugName"))
 	TArray<FCameraModeData> CameraModes;
 
 	UPROPERTY(BlueprintReadOnly)
