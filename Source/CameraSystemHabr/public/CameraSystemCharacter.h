@@ -27,7 +27,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveTag(const FGameplayTag& Tag);
 
-	const FGameplayTagContainer& GetGameplayTags() const;
+	UFUNCTION(BlueprintPure)
+	FGameplayTagContainer GetGameplayTags() const;
 
 protected:
 	void MoveForward(float Value);
@@ -39,9 +40,6 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	void EnableSprint();
-	void DisableSprint();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
@@ -62,10 +60,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = true))
-	USceneComponent* SpringArmPivot;
-
-	UPROPERTY(BlueprintReadOnly)
-	FGameplayTagContainer TagContainer;
+	TMap<FGameplayTag, uint32> TagMap;
 };
 

@@ -91,7 +91,6 @@ void UCameraModeComponent::UpdateCameraMode(float DeltaTime)
 	if (CurrentCameraMode != nullptr)
 	{
 		UpdateSpringArmLength(DeltaTime);
-		UpdateSpringArmPivotLocation(DeltaTime);
 		UpdateCameraLocation(DeltaTime);
 		UpdateFOV(DeltaTime);
 	}
@@ -106,17 +105,6 @@ void UCameraModeComponent::UpdateSpringArmLength(float DeltaTime)
 	const auto newArmLength = FMath::FInterpTo(currentLength, targetLength, DeltaTime, GetInterpSpeed());
 
 	Character->GetCameraBoom()->TargetArmLength = newArmLength;
-}
-
-void UCameraModeComponent::UpdateSpringArmPivotLocation(float DeltaTime)
-{
-	const auto currentLocation = Character->GetCameraBoom()->GetRelativeLocation();
-
-	const auto targetLocation = OriginSpringArmRelativeLocation + CurrentCameraMode->SpringArmPivotLocationOffset;
-
-	const auto newLocation = FMath::VInterpTo(currentLocation, targetLocation, DeltaTime, GetInterpSpeed());
-
-	Character->GetCameraBoom()->SetRelativeLocation(newLocation);
 }
 
 void UCameraModeComponent::UpdateCameraLocation(float DeltaTime)

@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Algo/ForEach.h"
 
 ACameraSystemCharacter::ACameraSystemCharacter()
 {
@@ -20,49 +21,49 @@ ACameraSystemCharacter::ACameraSystemCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	GetCharacterMovement()->bOrientRotationToMovement = true; 
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); 
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
-	SpringArmPivot = CreateDefaultSubobject<USceneComponent>(TEXT("SpringArmPivot"));
-	SpringArmPivot-> SetupAttachment(RootComponent);
-
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(SpringArmPivot);
-	CameraBoom->TargetArmLength = 300.0f; 
-	CameraBoom->bUsePawnControlRotation = true; 
+	CameraBoom->SetupAttachment(RootComponent);
+	CameraBoom->TargetArmLength = 300.0f;
+	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); 
-	FollowCamera->bUsePawnControlRotation = false; 
-	
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
+
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
 
 void ACameraSystemCharacter::AddTag(const FGameplayTag& Tag)
 {
-	TagContainer.AddTag(Tag);
+	++TagMap.FindOrAdd(Tag);
 	OnTagContainerChanged.Broadcast(Tag, true);
 }
 
 void ACameraSystemCharacter::RemoveTag(const FGameplayTag& Tag)
 {
-	TagContainer.RemoveTag(Tag);
-	OnTagContainerChanged.Broadcast(Tag, false);
+	auto& val = --TagMap.FindOrAdd(Tag);
+	OnTagContainerChanged.Broadcast(Tag, val > 0);
 }
 
-const FGameplayTagContainer& ACameraSystemCharacter::GetGameplayTags() const
+FGameplayTagContainer ACameraSystemCharacter::GetGameplayTags() const
 {
-	return TagContainer;
+	FGameplayTagContainer tags;
+
+	Algo::ForEach(TagMap, [&](const auto& it) { if (it.Value > 0) tags.AddTag(it.Key); });
+
+	return tags;
 }
 
 void ACameraSystemCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	check(PlayerInputComponent);
 
-	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -73,23 +74,6 @@ void ACameraSystemCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAxis("TurnRate", this, &ACameraSystemCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ACameraSystemCharacter::LookUpAtRate);
-
-	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACameraSystemCharacter::EnableSprint);
-	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACameraSystemCharacter::DisableSprint);
-}
-
-void ACameraSystemCharacter::EnableSprint()
-{
-	AddTag(FGameplayTag::RequestGameplayTag(TEXT("CharacterState.Sprint")));
-
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
-}
-
-void ACameraSystemCharacter::DisableSprint()
-{
-	RemoveTag(FGameplayTag::RequestGameplayTag(TEXT("CharacterState.Sprint")));
-
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 }
 
 void ACameraSystemCharacter::TurnAtRate(float Rate)
@@ -119,12 +103,12 @@ void ACameraSystemCharacter::MoveForward(float Value)
 
 void ACameraSystemCharacter::MoveRight(float Value)
 {
-	if ( (Controller != NULL) && (Value != 0.0f) )
+	if ((Controller != NULL) && (Value != 0.0f))
 	{
 		// find out which way is right
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
-	
+
 		// get right vector 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction

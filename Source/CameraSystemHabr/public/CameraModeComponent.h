@@ -59,7 +59,6 @@ protected:
 	float GetInterpSpeed() const;
 	void UpdateCameraMode(float DeltaTime);
 	void UpdateSpringArmLength(float DeltaTime);
-	void UpdateSpringArmPivotLocation(float DeltaTime);
 	void UpdateCameraLocation(float DeltaTime);
 	void UpdateFOV(float DeltaTime);
 

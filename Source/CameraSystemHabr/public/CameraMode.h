@@ -27,9 +27,6 @@ public:
 	FVector CameraOffset = FVector::ZeroVector;
 
 	UPROPERTY(EditDefaultsOnly)
-	FVector SpringArmPivotLocationOffset;
-
-	UPROPERTY(EditDefaultsOnly)
 	bool bUseControllerDesiredRotation = false;
 	
 };
