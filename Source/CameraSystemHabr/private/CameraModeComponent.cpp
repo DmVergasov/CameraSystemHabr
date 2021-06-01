@@ -82,7 +82,7 @@ float UCameraModeComponent::GetInterpSpeed() const
 {
 	auto timeAfterModeWasChanged = GetWorld()->GetTimeSeconds() - TimeSecondsAfterSetNewMode;
 	auto lerpDuration = CurrentCameraMode->InterpolationLerpDuration;
-	auto lerpAlpha = FMath::Min(1.f, timeAfterModeWasChanged / lerpDuration);
+	auto lerpAlpha = FMath::IsNearlyZero(lerpDuration) ? 1.f : FMath::Min(1.f, timeAfterModeWasChanged / lerpDuration);
 	return FMath::Lerp(PreviousInterpSpeed, CurrentCameraMode->InterpolationSpeed, lerpAlpha);
 }
 
