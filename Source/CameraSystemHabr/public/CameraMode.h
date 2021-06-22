@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "Engine/DataAsset.h"
 #include "CameraMode.generated.h"
 
-UCLASS(Abstract, Blueprintable, editinlinenew)
-class CAMERASYSTEMHABR_API UCameraMode : public UObject
+UCLASS(Blueprintable, editinlinenew)
+class CAMERASYSTEMHABR_API UCameraMode : public UDataAsset
 {
 	GENERATED_BODY()
 public:

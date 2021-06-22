@@ -60,6 +60,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 
-	TMap<FGameplayTag, uint32> TagMap;
+	TMap<FGameplayTag, int32> TagMap;
 };
 

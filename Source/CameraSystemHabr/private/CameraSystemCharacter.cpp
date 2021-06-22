@@ -41,8 +41,8 @@ ACameraSystemCharacter::ACameraSystemCharacter()
 
 void ACameraSystemCharacter::AddTag(const FGameplayTag& Tag)
 {
-	++TagMap.FindOrAdd(Tag);
-	OnTagContainerChanged.Broadcast(Tag, true);
+	auto& val = ++TagMap.FindOrAdd(Tag);
+	OnTagContainerChanged.Broadcast(Tag, val > 0);
 }
 
 void ACameraSystemCharacter::RemoveTag(const FGameplayTag& Tag)
