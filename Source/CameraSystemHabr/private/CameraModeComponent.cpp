@@ -26,8 +26,6 @@ void UCameraModeComponent::BeginPlay()
 		Character->OnTagContainerChanged.AddDynamic(this, &UCameraModeComponent::OnAbilityTagChanged);
 	}
 
-	OriginSpringArmRelativeLocation = Character->GetCameraBoom()->GetRelativeLocation();
-
 	PlayerCameraManager = CastChecked<APlayerController>(Character->GetController())->PlayerCameraManager;
 
 	TryUpdateCameraMode();

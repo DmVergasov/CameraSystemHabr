@@ -83,8 +83,6 @@ protected:
 
 	TWeakObjectPtr<APlayerCameraManager> PlayerCameraManager;
 
-	FVector OriginSpringArmRelativeLocation;
-
 	float TimeSecondsAfterSetNewMode = 0.f;
 
 	float PreviousInterpSpeed = 0.f;
